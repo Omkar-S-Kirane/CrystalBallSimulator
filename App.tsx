@@ -1,16 +1,3 @@
-// App.tsx
-// React Native + TypeScript (v5.5+) single-file example for the "Crystal Ball Drop Simulator" challenge.
-// Place this file in a new React Native (expo or react-native-cli) TypeScript project as App.tsx.
-// ---------------------------------------------------------------------------------------------
-// Features implemented:
-// - Inputs for n (floors) and secret f (breaking floor)
-// - useCrystalBallSolver custom hook encapsulating the two-ball optimal algorithm
-// - Visual building (blocks), floor highlighting for each drop, broken ball state
-// - Run Simulation, Reset Simulation, and a "Step" mode (Next / Prev) to walk through drops
-// - Basic input validation and result display (found floor, total drops, secret f shown at end)
-// - TypeScript types and React hooks (useState, useReducer, useRef)
-// ---------------------------------------------------------------------------------------------
-
 import React, { useEffect, useMemo, useRef, useReducer, useState } from 'react';
 import {
   SafeAreaView,
@@ -25,8 +12,6 @@ import {
   Alert,
 } from 'react-native';
 
-// ----------------------------- Types ---------------------------------
-
 type SolverState = {
   sequence: number[]; // floors to drop in order for first-phase drops
   drops: number[]; // actual drop sequence (may include repeated lower-floor linear checks)
@@ -34,13 +19,6 @@ type SolverState = {
   totalDrops: number; // count
   finished: boolean;
 };
-
-// ------------------------ useCrystalBallSolver ------------------------
-
-// This hook encapsulates the algorithm and simulation progression.
-// It does NOT read the secret `secretF` directly for the algorithm's decisions
-// but the simulation driver (inside hook) will 'test' against secretF to determine
-// break/no-break outcomes. The solver exposes a `step()` and `runAll()` to progress.
 
 export function useCrystalBallSolver({
   n,
@@ -65,8 +43,6 @@ export function useCrystalBallSolver({
     return kLocal;
   }, [n]);
 
-  // Precompute first-phase drop floors (decreasing step sizes):
-  // floors: k, k+(k-1), k+(k-1)+(k-2), ... until >= n
   useEffect(() => {
     if (n <= 0) {
       setState((s) => ({ ...s, sequence: [], drops: [], foundFloor: null, totalDrops: 0, finished: false }));
@@ -104,17 +80,9 @@ export function useCrystalBallSolver({
     // If we haven't exhausted the first-phase sequence, pop next
     const nextIndex = state.drops.length;
 
-    // If we're in first phase (we haven't seen a broken drop yet), we should attempt next sequence
-    // But we don't know whether a previous drop broke until the simulation records it.
-    // We'll model algorithm: drop at floors in `sequence` until a break occurs.
-
-    // Determine next first-phase target: it's either sequence[nextFirstIndex] or if we've already
-    // had a break we switch to linear scan between previous safe+1..breachFloor-1
-
     // Look for the first break already recorded
     const firstBreakDropIndex = state.drops.findIndex((d) => d < 0); // we will encode broken copies as -floor-1000? (we DON'T do that)
 
-    // Simpler: we will store drops as numbers; when a drop breaks we will set a "broken" marker in runtime.
     // For clarity here, we'll inspect past drops against secretF to see if any broke
     const pastBreakIndex = state.drops.findIndex((d) => testBreaks(d));
 
@@ -130,9 +98,6 @@ export function useCrystalBallSolver({
         let foundFloor: number | null = null;
 
         if (broke) {
-          // start linear search between previous safe floor (exclusive) +1 up to floorToTest
-          // previous safe floor is floorToTest - (remaining step size)
-          // compute previous safe floor: if this is firstPhaseIndex 0 -> previous safe = -1
           const prevStep = k - firstPhaseIndex; // remaining step size when we chose this floor
           const previousSafe = floorToTest - prevStep - 1 + 1; // careful math: simpler to compute directly below
           // Simpler approach: previous safe is if firstPhaseIndex === 0 -> -1, else sequence[firstPhaseIndex -1]
@@ -241,8 +206,6 @@ export function useCrystalBallSolver({
   return { state, k, step, runAll, reset };
 }
 
-// ----------------------------- App UI --------------------------------
-
 export default function App() {
   const [nText, setNText] = useState('10');
   const [fText, setFText] = useState('3');
@@ -276,8 +239,6 @@ export default function App() {
   const runSimulation = async () => {
     applyInputs();
     setAutoRunning(true);
-    // run the full simulation with small delays to show UI updates
-    // We'll call solver.runAll to compute final drops quickly, but we'll animate by stepping through those drops
     const result = solver.runAll();
     const { simDrops } = result;
     for (let i = 0; i < simDrops.length; i++) {
@@ -298,10 +259,8 @@ export default function App() {
 
   // Step controls: Next Step will invoke solver.step and increment stepIndex to reveal more drops
   const nextStep = () => {
-    if (!solver.state.finished) {
-      const r = solver.step();
-      setStepIndex((s) => s + 1);
-    }
+    const result = solver.step();
+    setStepIndex((s) => s + 1);
   };
 
   const prevStep = () => {
@@ -361,7 +320,7 @@ export default function App() {
         <TouchableOpacity style={styles.smallButton} onPress={prevStep} disabled={stepIndex <= 0}>
           <Text>◀ Prev</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.smallButton} onPress={nextStep} disabled={solver.state.finished && stepIndex >= solver.state.drops.length}>
+        <TouchableOpacity style={styles.smallButton} onPress={nextStep} disabled={stepIndex >= solver.state.drops.length}>
           <Text>Next ▶</Text>
         </TouchableOpacity>
         <Text style={{ marginLeft: 12 }}>Step: {stepIndex} / {solver.state.drops.length}</Text>
