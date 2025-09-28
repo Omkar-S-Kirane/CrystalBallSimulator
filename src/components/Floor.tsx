@@ -1,6 +1,6 @@
 // components/Floor.tsx
 import React, { useEffect, useRef } from 'react';
-import { Animated, Text, StyleSheet, Dimensions } from 'react-native';
+import { Animated, Text, StyleSheet } from 'react-native';
 
 type FloorProps = {
   floor: number;
@@ -18,11 +18,11 @@ const Floor: React.FC<FloorProps> = ({
   floorHeight,
 }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-  const bgAnim = useRef(new Animated.Value(0)).current; // 0 = default, 1 = tested
+  const bgAnim = useRef(new Animated.Value(tested ? 1 : 0)).current;
 
   useEffect(() => {
     if (tested) {
-      // Pop-in effect (JS driver since bgAnim uses JS too)
+      // animate forward (tested)
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 1.1,
@@ -36,24 +36,31 @@ const Floor: React.FC<FloorProps> = ({
         }),
       ]).start();
 
-      // Background fade animation
       Animated.timing(bgAnim, {
         toValue: 1,
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      // animate backward (untested)
+      Animated.timing(bgAnim, {
+        toValue: 0,
         duration: 300,
         useNativeDriver: false,
       }).start();
     }
   }, [tested]);
 
+  const backgroundColor = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#fff', broke ? '#fee2e2' : '#fff7ed'],
+  });
+
   return (
     <Animated.View
-      key={floor}
       style={[
         styles.floor,
-        { transform: [{ scale: scaleAnim }] },
-        { height: floorHeight },
-        tested && styles.floorTested,
-        broke && styles.floorBroken,
+        { transform: [{ scale: scaleAnim }], height: floorHeight, backgroundColor },
         isCurrentTest && styles.floorCurrent,
       ]}
     >
@@ -72,7 +79,5 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
   },
   floorText: { fontSize: 12 },
-  floorTested: { backgroundColor: '#fff7ed' },
-  floorBroken: { backgroundColor: '#fee2e2' },
   floorCurrent: { borderLeftWidth: 4, borderLeftColor: '#2563eb' },
 });
