@@ -27,12 +27,12 @@ const Floor: React.FC<FloorProps> = ({
         Animated.timing(scaleAnim, {
           toValue: 1.1,
           duration: 150,
-          useNativeDriver: false, // ⚠️ changed to false
+          useNativeDriver: false,
         }),
         Animated.timing(scaleAnim, {
           toValue: 1,
           duration: 150,
-          useNativeDriver: false, // ⚠️ changed to false
+          useNativeDriver: false,
         }),
       ]).start();
 
@@ -44,8 +44,6 @@ const Floor: React.FC<FloorProps> = ({
       }).start();
     }
   }, [tested]);
-
-  // const floorHeight = Math.max(26, Math.floor((Dimensions.get('window').height - 300) / Math.max(1, n)));
 
   return (
     <Animated.View
