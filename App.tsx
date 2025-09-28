@@ -29,10 +29,6 @@ export default function App() {
 
   const solver = useCrystalBallSolver({ n, secretF });
 
-  useEffect(() => {
-    // keep local n/secretF in sync when inputs validated
-  }, [n, secretF]);
-
   const applyInputs = () => {
     const nn = parseInt(nText, 10);
     const ff = parseInt(fText, 10);
@@ -182,9 +178,4 @@ const styles = StyleSheet.create({
   resultsRow: { flexDirection: 'row', justifyContent: 'space-around', marginVertical: 6 },
   resultText: { fontWeight: '600' },
   buildingContainer: { flex: 1, borderWidth: 1, borderColor: '#ddd', borderRadius: 8, overflow: 'hidden', backgroundColor: '#fff' },
-  floor: { borderBottomWidth: 1, borderBottomColor: '#eee', justifyContent: 'center', paddingLeft: 12 },
-  floorText: { fontSize: 12 },
-  floorTested: { backgroundColor: '#fff7ed' },
-  floorBroken: { backgroundColor: '#fee2e2' },
-  floorCurrent: { borderLeftWidth: 4, borderLeftColor: '#2563eb' },
 });
