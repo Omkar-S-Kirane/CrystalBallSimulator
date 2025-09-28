@@ -12,6 +12,8 @@ import {
   Alert,
 } from 'react-native';
 
+import Floor  from './Floor';
+
 type SolverState = {
   sequence: number[]; // floors to drop in order for first-phase drops
   drops: number[]; // actual drop sequence (may include repeated lower-floor linear checks)
@@ -335,27 +337,27 @@ export default function App() {
       <View style={styles.buildingContainer}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           {floors
-            .slice()
-            .reverse()
-            .map((floor) => {
-              const tested = visibleDrops.includes(floor);
-              const broke = visibleDrops.includes(floor) && floor >= secretF;
-              const isCurrentTest = solver.state.drops[visibleDrops.length - 1] === floor && !solver.state.finished;
-              return (
-                <View
-                  key={floor}
-                  style={[
-                    styles.floor,
-                    { height: floorHeight },
-                    tested && styles.floorTested,
-                    broke && styles.floorBroken,
-                    isCurrentTest && styles.floorCurrent,
-                  ]}
-                >
-                  <Text style={styles.floorText}>Floor {floor}</Text>
-                </View>
-              );
-            })}
+  .slice()
+  .reverse()
+  .map((floor) => {
+    const tested = visibleDrops.includes(floor);
+    const broke = tested && floor >= secretF;
+    const isCurrentTest =
+      solver.state.drops[visibleDrops.length - 1] === floor && !solver.state.finished;
+
+    return (
+      <Floor
+        key={floor}
+        floor={floor}
+        tested={tested}
+        broke={broke}
+        isCurrentTest={isCurrentTest}
+        height={floorHeight}
+      />
+    );
+  })}
+
+
         </ScrollView>
       </View>
 

@@ -1,98 +1,119 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Crystal Ball Drop Simulator (React Native CLI + TypeScript)
 
-# Getting Started
+This is a React Native CLI application written in TypeScript that simulates the **two-crystal ball (egg dropping) problem** using the optimal two-ball strategy.  
+It includes both **step-by-step** and **auto-simulation** modes to visualize how the algorithm determines the breaking floor with minimal drops in the worst case.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## 📦 Prerequisites
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+Make sure you have the following installed on your system:
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- [Node.js](https://nodejs.org/) (>= 20, as defined in `package.json`)
+- [Yarn](https://yarnpkg.com/) or npm
+- [React Native CLI](https://reactnative.dev/docs/environment-setup)  
+- Xcode (for iOS) or Android Studio (for Android)
 
-```sh
-# Using npm
-npm start
+---
 
-# OR using Yarn
+## 🚀 Installation & Running
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Omkar-S-Kirane/CrystalBallSimulator.git
+cd CrystalBallSimulator
+
+2. Install dependencies
+# with yarn
+yarn install
+
+# or with npm
+npm install
+
+3. Start Metro bundler
 yarn start
-```
+# or
+npm run start
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+4. Run the app
+On Android:
+yarn android
+# or
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+On iOS:
+yarn ios
+# or
 npm run ios
 
-# OR using Yarn
-yarn ios
-```
+🧠 Algorithm Explanation
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+The app solves the two-crystal ball problem:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+Given a building with n floors and 2 crystal balls that break if dropped from floor f or higher, find the smallest such f with the minimum number of drops in the worst case.
 
-## Step 3: Modify your app
+Strategy
 
-Now that you have successfully run the app, let's make changes!
+Compute the smallest integer k such that:
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+k * (k + 1) / 2 >= n
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+This ensures that in the worst case, no more than k drops are required.
 
-## Congratulations! :tada:
+Drop the first ball at floors:
 
-You've successfully run and modified your React Native App. :partying_face:
+k, k + (k-1), k + (k-1) + (k-2), ...
 
-### Now what?
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+until it breaks.
 
-# Troubleshooting
+Once the first ball breaks at some floor, use the second ball to linearly scan floors between the last safe floor + 1 and the breaking floor.
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+Example
 
-# Learn More
+For n = 10, the optimal k = 4
 
-To learn more about React Native, take a look at the following resources:
+First ball drop sequence: 4, 7, 9
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
-# CrystalBallSimulator
+If the first ball breaks at 7, scan floors 5, 6, 7 with the second ball
+
+Worst-case drops = 4
+
+🖥 Features
+
+Input controls for total floors (n) and secret breaking floor (f)
+
+Step-by-step mode → manually test each drop
+
+Auto-simulation mode → runs the full algorithm with delays
+
+Building visualization:
+
+Highlight tested floors
+
+Mark floors where balls break
+
+Indicate current test floor
+
+Displays:
+
+Found breaking floor
+
+Total number of drops
+
+Secret floor (for validation)
+
+⚙️ Scripts
+
+Available via yarn or npm run:
+
+start → Start Metro bundler
+
+android → Build and run on Android emulator/device
+
+ios → Build and run on iOS simulator/device
+
+lint → Run ESLint checks
+
+test → Run Jest tests
