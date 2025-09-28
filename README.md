@@ -1,7 +1,7 @@
 # Crystal Ball Drop Simulator (React Native CLI + TypeScript)
 
 This is a React Native CLI application written in TypeScript that simulates the **two-crystal ball (egg dropping) problem** using the optimal two-ball strategy.  
-It includes both **step-by-step** and **auto-simulation** modes to visualize how the algorithm determines the breaking floor with minimal drops in the worst case.
+It includes **auto-simulation** modes to visualize how the algorithm determines the breaking floor with minimal drops in the worst case.
 
 ---
 
@@ -106,14 +106,10 @@ Secret floor (for validation)
 
 ⚙️ Scripts
 
-Available via yarn or npm run:
+Available via npm run:
 
 start → Start Metro bundler
 
 android → Build and run on Android emulator/device
 
 ios → Build and run on iOS simulator/device
-
-lint → Run ESLint checks
-
-test → Run Jest tests
