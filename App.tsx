@@ -30,16 +30,30 @@ export default function App() {
   const solver = useCrystalBallSolver({ n, secretF });
 
   const applyInputs = () => {
-    const nn = parseInt(nText, 10);
-    const ff = parseInt(fText, 10);
-    if (Number.isNaN(nn) || Number.isNaN(ff)) return Alert.alert('Invalid input', 'Please enter valid integers.');
-    if (nn <= 0) return Alert.alert('Invalid floors', 'Number of floors must be > 0');
-    if (ff < 0 || ff >= nn) return Alert.alert('Invalid breaking floor', '0 <= f < n');
-    setN(nn);
-    setSecretF(ff);
-    solver.reset();
-    setStepIndex(0);
-  };
+  const nn = parseInt(nText, 10);
+  const ff = parseInt(fText, 10);
+
+  if (Number.isNaN(nn) || Number.isNaN(ff)) {
+    return Alert.alert('Oops!', 'Please enter numbers only for both fields.');
+  }
+
+  if (nn <= 0) {
+    return Alert.alert('Invalid floors', 'The total number of floors must be at least 1.');
+  }
+
+  if (ff < 0 || ff >= nn) {
+    return Alert.alert(
+      'Invalid secret floor',
+      `The secret floor must be between 0 and ${nn - 1}.`
+    );
+  }
+
+  setN(nn);
+  setSecretF(ff);
+  solver.reset();
+  setStepIndex(0);
+};
+
 
   const runSimulation = async () => {
     applyInputs();
