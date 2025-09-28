@@ -10,7 +10,9 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
+import Floor from './src/components/Floor';
 
 type SolverState = {
   sequence: number[]; // floors to drop in order for first-phase drops
@@ -342,18 +344,7 @@ export default function App() {
               const broke = visibleDrops.includes(floor) && floor >= secretF;
               const isCurrentTest = solver.state.drops[visibleDrops.length - 1] === floor && !solver.state.finished;
               return (
-                <View
-                  key={floor}
-                  style={[
-                    styles.floor,
-                    { height: floorHeight },
-                    tested && styles.floorTested,
-                    broke && styles.floorBroken,
-                    isCurrentTest && styles.floorCurrent,
-                  ]}
-                >
-                  <Text style={styles.floorText}>Floor {floor}</Text>
-                </View>
+                <Floor key={floor} floor={floor} tested={tested} broke={broke} isCurrentTest={isCurrentTest} floorHeight={floorHeight} />
               );
             })}
         </ScrollView>
